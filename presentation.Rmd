@@ -32,3 +32,11 @@ Prior talk focused on ethically mitigating bias in algorithms. This talk focuses
 
 ## History
 Like many things in math and computer science, what is "new" is often pretty old. Fair ML is a hot topic, but a very similar conversation was happening in the 1960's and 1970's. [50 years of (Un)Fair Paper]
+
+## Definitions from Corbett-Davies
+- anti-classification  
+- classification parity  
+- calibration   
+
+## Legal Vignette
+Corbett-Davies discuss how U.S. law generally prohobits use of protected classes, which is in line with anti-classification. However, it is permitted in some cases like affirmative action. 
