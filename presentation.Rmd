@@ -2,7 +2,7 @@
 title: "fairML"
 author: "Zander Meitus"
 date: "1/15/2021"
-output: 
+output:
   powerpoint_presentation:
     reference_doc: deloitteTemplate.pptx
 ---
@@ -32,3 +32,40 @@ Prior talk focused on ethically mitigating bias in algorithms. This talk focuses
 
 ## History
 Like many things in math and computer science, what is "new" is often pretty old. Fair ML is a hot topic, but a very similar conversation was happening in the 1960's and 1970's. [50 years of (Un)Fair Paper]
+
+
+## formulas
+set of observable attributes for individual $$i$$
+$$x_{i} \in \mathbb{R}^{p}$$
+
+Two possible actions
+
+$$a_{0}$$ and $$a_{1}$$
+
+Decision algorithm is any function $$d: R^{p} \rightarrow \{0,1\}$$ where $$d(x) = k$$
+
+## assumptions - corbett davies
+- x can be partitioned into protected and unprotected features
+$$x = (x_{p}, x_{u})$$
+
+- For each individual, there is a quantity the specifies target of prediction
+$$y \in \{0,1\}$$
+- Define random variables $$X$$ and $$Y$$ that take on values $$X= x$$ and $$Y==y$$ for and individual drawn randomly form population
+
+- True risk function 
+$$r(x) = Pr(Y = 1 | X = x)$$
+
+- Risk assessment algorithms produce a risk score $s(x)$ that may be viewed as an approximation of true risk $r(x)$ which often has a threshold to convert from risk scores to decisions, setting $d(x) = 1$ if and only if $s(x) \geq t$ for some fixed threshold $t \in \mathbb{R}$
+
+## Mathematical definitions
+Anti-classification: decision do not consider protected attributes  
+$d(x) = d(x^{\prime})$ for all $x, x^{\prime}$ such that $x_{u} = x^{\prime}_{u}$
+
+Classification parity: some given measure of classification error is equal across groups defined by protected attributes. There are lots of metrics from confusion matrix that could be used here (Berk et. al.), as well as the Area Under the Curve. Corbett-Davies highlight:
+- demographic parity: parity in proportion of positive decisions  
+$$Pr(d(X) = 1 | X_{p}) = Pr(d(X) = 1)$$  
+- parity of false positive rates  
+$$Pr(d(X)  =1 | Y = 0, X_{p}) = Pr(d(X) = 1 | Y = 0)$$  
+
+Calibration: outcomes should be independent of protected attributes conditional on risk score. Give risk scores $s(x)$
+$$Pr(Y = 1 | s(X), X_{p}) = Pr(Y =1 | s(X))$$
