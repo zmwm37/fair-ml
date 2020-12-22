@@ -11,18 +11,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## R Markdown
-
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
-
 ## Framing the Problem
 
 ### Defintions
@@ -33,11 +21,19 @@ Prior talk focused on ethically mitigating bias in algorithms. This talk focuses
 ## History
 Like many things in math and computer science, what is "new" is often pretty old. Fair ML is a hot topic, but a very similar conversation was happening in the 1960's and 1970's. [50 years of (Un)Fair Paper]
 
+## Quantifying fair in different algorithm types
+- regression  (ranking)  
+- classification (ProPublica, Buolamwini & Gebru)  
+- recommendation engines (Algorithms of Opression for non-technical dicussion of what's unfair)  
+- natural language processing/generation (Yeo & Chen)    
+- Optimization  
+
+You could pick and combination of bulletpoints above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sortof) and probably the most dicsussed in "ML pop culture."
+
 ## Definitions from Corbett-Davies
 - anti-classification  
 - classification parity  
 - calibration   
-
 
 ## Legal Vignette
 Corbett-Davies discuss how U.S. law generally prohobits use of protected classes, which is in line with anti-classification. However, it is permitted in some cases like affirmative action. 
@@ -48,15 +44,15 @@ $$x_{i} \in \mathbb{R}^{p}$$
 
 Two possible actions
 
-$$a_{0}$$ and $$a_{1}$$
+$a_{0}$ and $a_{1}$
 
-Decision algorithm is any function $$d: R^{p} \rightarrow \{0,1\}$$ where $$d(x) = k$$
+Decision algorithm is any function $d: R^{p} \rightarrow \{0,1\}$ where $d(x) = k$
 
 ## assumptions - corbett davies
 - x can be partitioned into protected and unprotected features
 $$x = (x_{p}, x_{u})$$
 
-- For each individual, there is a quantity the specifies target of prediction
+- For each individual, there is a quantity that specifies target of prediction
 $$y \in \{0,1\}$$
 - Define random variables $$X$$ and $$Y$$ that take on values $$X= x$$ and $$Y==y$$ for and individual drawn randomly form population
 
