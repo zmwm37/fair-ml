@@ -14,6 +14,8 @@ scoresWB <- scores %>%
 predAll <- prediction(scoresWB$decile_score,scoresWB$is_recid)
 perfAll <- performance(predAll, 'tpr','fpr')
 aucAll <- performance(predAll,'auc')
+accAll <- performance(predAll,'acc')
+fnrAll <- performance(predAll, 'fnr')
 
 
 # roc curve
@@ -36,13 +38,21 @@ for(i in g) {
   
   # create prediction/performance
   pred <- prediction(s$decile_score, s$is_recid)
-  perf <- performance(pred, 'tpr','fpr')
+  rocPerf <- performance(pred, 'tpr','fpr')
+  acc <- performance(pred,'acc')
+  tnr <- performance(pred,'tnr')
+  fnr <- performance(pred,'fnr')
+  
+  
   
   # create dataframe of cutoffs, tpr, and fpr
   outPerf[[z]] <- data.frame(race = i,
                              cutoff  = perf@alpha.values[[1]],
-                             tpr = perf@y.values[[1]],
-                             fpr = perf@x.values[[1]])
+                             tpr = rocPerf@y.values[[1]],
+                             fpr = rocPerf@x.values[[1]],
+                             acc = acc@y.values[[1]],
+                             tnr = tnr@y.values[[1]],
+                             fnr = fnr@y.values[[1]])
   
   # if not first curve, add to existing plot
   b <- if(z > 1) {
@@ -52,7 +62,7 @@ for(i in g) {
   }
   
   # plot
-  plot(perf, add = b, col = lineColors[z])
+  plot(rocPerf, add = b, col = lineColors[z])
   
   if (z == 1) {
     legend('bottomright',
@@ -74,3 +84,12 @@ ggplot(data = perfDf, aes(x = as.factor(cutoff), y = tpr, fill = race)) +
 # plot tpr and fpr comparing groups
 ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fpr, fill = race)) + 
   geom_bar(position = 'dodge', stat = 'identity')
+
+# plot fnr comparing groups
+ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, fill = race)) + 
+  geom_bar(position = 'dodge', stat = 'identity')
+
+# plot tnr comparing groups
+ggplot(data = perfDf, aes(x = as.factor(cutoff), y = tnr, fill = race)) + 
+  geom_bar(position = 'dodge', stat = 'identity')
+
