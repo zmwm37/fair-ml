@@ -19,51 +19,61 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 ### Mitigating Bias vs. Quantifying Bias
-Prior talk focused on ethically mitigating bias in algorithms. This talk focuses on techniques to quanitfy bias.
+Prior talk focused on ethically mitigating bias in algorithms. This talk focuses on techniques and challenges to *quanitfy* bias. To recap from the excellent talk given by [INSERT NAME],.... Two types of bias that the talk covered include:
+
+- Selection Bias: [INSERT DEFINITION]  
+
+- Confirmation Bias: [INSERT DEFINITION]  
 
 ### Defintions
-Ok great, let's quantify bias or fairness. What do you mean by "fairness" in Machine Learning?  
+Ok great, let's quantify bias or fairness. What do we mean by "fairness" in Machine Learning?  
 - This presentation will talk about approaches and challenges to mathematically defining fairness  
-- Ultimately, fairness includes a philosohpical component as well, but as data science practitioners working in quantitative methods, it's helpful to apply a mathematical framework  
+- Ultimately, fairness includes a philosohpical component as well that is very important. As data science practitioners working in quantitative methods, it's helpful to apply a mathematical framework too  
 
 ## History
-Like many things in math and computer science, what is "new" is often pretty old. Fair ML is a hot topic, but a very similar conversation was happening in the 1960's and 1970's. [50 years of (Un)Fair Paper]
+Like many things in math and computer science, what is "new" is often pretty old. Fair ML is a hot topic, but a very similar conversation was happening in the 1960's and 1970's. A couple reseraches at Google Brain* presented at a conference in 2018 prsented on this topic [50 years of (Un)Fair Paper]
+
+* Google Brain has done great work in this space, but it's important to note the [recent pushing out](https://www.technologyreview.com/2020/12/04/1013294/google-ai-ethics-research-paper-forced-out-timnit-gebru/) of one of their leading researchers, Timnit Gebru, over a forthcoming paper she had coauthored.
 
 ## Quantifying fair in different algorithm types
-There are lots of classes of algorithms. The burgeoning field of fair ML is quickly demonstrating that differently classes of algorithms require different quantitative frameworks for measuring fairness. Here are a few algorithm class examples and related fair ML research:  
-- regression  (ranking)  
-- classification (ProPublica, Buolamwini & Gebru)  
-- recommendation engines (Algorithms of Opression for non-technical dicussion of what's unfair)  
-- natural language processing/generation (Yeo & Chen)    
-- Optimization  
+There are lots of classes of algorithms. The burgeoning field of fair ML is quickly demonstrating that different classes of algorithms require different quantitative frameworks for measuring fairness. Here are a few algorithm class examples and related fair ML research:  
+- Regression  (ranking)  
+- Classification (ProPublica, Buolamwini & Gebru)  
+- Recommendation Engines (Algorithms of Opression for non-technical dicussion of what's unfair)  
+- Natural Language Processing/Generation (Yeo & Chen)    
+- Optimization 
+- Reinforcement Learning  ([Google ML Fairness Gym](https://github.com/google/ml-fairness-gym))
 
-You could pick and combination of bulletpoints above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sortof) and probably the most dicsussed in "ML pop culture."
+You could pick any combination of alogirthm classes above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sort of) and probably the most dicsussed in "ML pop culture." 
 
-## Corbett-Davies & Goyle: [Paper title]
-In a 2018 paper, two researchers at Stanford University, Corbett-Davies and Goyle, identified prevalent legal definitions of "fairness" in U.S. law and examined their statistical underpinnings and shortcomings. They identify the following three standards:  
-- anti-classification: [definition]  
-- classification parity: [definition]  
-- calibration: [definition]   
+## Corbett-Davies and Goel: The Measure & Mismeasure of Fairness
+In a 2018 paper, two researchers at Stanford University, Corbett-Davies and Goel, identified prevalent legal definitions of "fairness" in U.S. law and examined their statistical underpinnings and shortcomings. They identify the following three standards:  
 
-## Legal Vignette
-Corbett-Davies discuss how U.S. law generally prohobits use of protected classes, which is in line with anti-classification. However, it is permitted in some cases like affirmative action. 
+- Anti-Classification: protected attributes are not explicitly used to make decisions  
 
-## formulas
+- Classification Parity: common measures of predictive performance are equal across groups of protected attributes  
+
+- Calibration: conditional on risk attributes, outcomes are independent of protected attributes     
+
+Legal Vignette: Corbett-Davies and Goel discuss how U.S. law generally prohibits use of protected classes, which is in line with anti-classification. However, it is permitted in some cases like affirmative action. 
+
+## Formulas
 ADD SOME EXAMPLES HERE
 set of observable attributes for individual $i$: 
 $$x_{i} \in \mathbb{R}^{p}$$
 
 Two possible actions: $a_{0}$ and $a_{1}$
+> Example: a court may choose to grant or not grant pretrial release to a defendant
 
 Decision algorithm is any function $d: R^{p} \rightarrow \{0,1\}$ where $d(x) = k$
 
-## assumptions - corbett davies
+## Assumptions - corbett davies
 - x can be partitioned into protected and unprotected features
 $$x = (x_{p}, x_{u})$$
 
 - For each individual, there is a quantity that specifies target of prediction
 $$y \in \{0,1\}$$
-- Define random variables $X$ and $Y$ that take on values $X = x$ and $Y = y$ for and individual drawn randomly form population
+- Define random variables $X$ and $Y$ that take on values $X = x$ and $Y = y$ for an individual drawn randomly form population
 
 - True risk function 
 $$r(x) = Pr(Y = 1 | X = x)$$
@@ -71,31 +81,117 @@ $$r(x) = Pr(Y = 1 | X = x)$$
 - Risk assessment algorithms produce a risk score $s(x)$ that may be viewed as an approximation of true risk $r(x)$ which often has a threshold to convert from risk scores to decisions, setting $d(x) = 1$ if and only if $s(x) \geq t$ for some fixed threshold $t \in \mathbb{R}$
 
 ## COMPAS Data Overview
-ProPublica 
+In 2016, ProPublica analyzed a commercially availbe algorithm made by Northpointe, Inc. that estimated the likelihood of a criminal defendant from become a recidivist (i.e. re-offending). Here's a brief description of the data
 
-## Mathematical definitions: Anti-Classification
+> We looked at more than 10,000 criminal defendants in Broward County, Florida, and compared their predicted recidivism rates with the rate that actually occurred over a two-year period. When most defendants are booked in jail, they respond to a COMPAS questionnaire. Their answers are fed into the COMPAS software to generate several scores including predictions of “Risk of Recidivism” and “Risk of Violent Recidivism.”
+
+We'll focus on the the "Risk of Recidivism" score to apply the ideas in Corbett-Davies and Goel's work. For a full description of the analysis, see [here](https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm)
+
+## Mathematical definitions: Anti-Classification (1 of ?)
 Anti-classification: decision do not consider protected attributes  
 $d(x) = d(x^{\prime})$ for all $x, x^{\prime}$ such that $x_{u} = x^{\prime}_{u}$
 
-The COMPAS algorithm doesn't use race as an input, so a basic application of the risk score is essentially applying the "Anti-Classificatio" principle. 
+The COMPAS algorithm doesn't use race as an input, so a basic application of the risk score is essentially applying the "Anti-Classification" principle. 
 
 There are several quantitative techniques that we could use to compare outcomes across groups.[source?] Let's start with ROC curves for white and Black defendants.
-[Insert ROC Curve]
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(ROCR)
+
+scores <- read.csv('../compas-analysis/compas-scores-two-years.csv')
+
+# filter to white and Black only
+scoresWB <- scores %>% 
+  filter(race %in% c('African-American', 'Caucasian'))
+
+# groups 
+g <- unique(as.character(scoresWB$race))
+lineColors <- c('red','blue')
+
+# list for group values
+outPerf <- list()
+
+z <- 1
+for(i in g) {
+  # filter 
+  s <- scoresWB %>% filter(race == i)
+  
+  # create prediction/performance
+  pred <- prediction(s$decile_score, s$is_recid)
+  rocPerf <- performance(pred, 'tpr','fpr')
+  acc <- performance(pred,'acc')
+  tnr <- performance(pred,'tnr')
+  fnr <- performance(pred,'fnr')
+  
+  
+  
+  # create dataframe of cutoffs, tpr, and fpr
+  outPerf[[z]] <- data.frame(race = i,
+                             cutoff  = rocPerf@alpha.values[[1]],
+                             tpr = rocPerf@y.values[[1]],
+                             fpr = rocPerf@x.values[[1]],
+                             acc = acc@y.values[[1]],
+                             tnr = tnr@y.values[[1]],
+                             fnr = fnr@y.values[[1]])
+  
+  # if not first curve, add to existing plot
+  b <- if(z > 1) {
+    TRUE
+  } else {
+    FALSE
+  }
+  
+  # plot
+  plot(rocPerf, add = b, col = lineColors[z])
+  
+  if (z == 1) {
+    legend('bottomright',
+           legend = g,
+           col = lineColors,
+           lty =1)
+  }
+  
+  z <- z + 1
+} 
+
+```
 
 Ok, curves look pretty similar and the areas under the curve (AUCs) are comparable. But this is a first example of nuance for measuring fariness. If we look at errror rates (false positive rate and false negative rate) by race, we see some discrepancies. At any given cutoff Caucasians have a higher false negative rate and African-Americans have a higher false positive rate. If we think of the implications of these errors, it means that at any given model score cutoff:  
 - point 1  
 - point 2  
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# bind group dataframes 
+perfDf <- do.call(rbind,outPerf)
+
+# plot fpr comparing groups
+ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fpr, group = race, color = race)) + 
+  geom_line(stat = 'identity')
+
+# plot fnr comparing groups
+ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, group = race, color = race)) + 
+   geom_line(stat = 'identity')
+```
 
 ## Mathematical definitions: Classification Parity
 Classification parity: some given measure of classification error is equal across groups defined by protected attributes. There are lots of metrics from confusion matrix that could be used here (Berk et. al.), as well as the Area Under the Curve. Corbett-Davies highlight:
 - demographic parity: parity in proportion of positive decisions  
 $$Pr(d(X) = 1 | X_{p}) = Pr(d(X) = 1)$$  
 - parity of false positive rates  
-$$Pr(d(X)  =1 | Y = 0, X_{p}) = Pr(d(X) = 1 | Y = 0)$$  
+$$Pr(d(X)  = 1 | Y = 0, X_{p}) = Pr(d(X) = 1 | Y = 0)$$  
+
+For a simple demonstration of this principle, let's take the error curves from the prior example. If we shift the curves for African-Americans to the left by 2, they become very comparable at several risk scores to the curves for Caucasians. So by subtracting 2 from the risk scores for African-Americans, the model becomes "fairer" based on classification parity. However, this directly violates the anti-classification we just covered since it considers protected characteristics in determining scores.
 
 ## Mathematical definitions: Calibration
 Calibration: outcomes should be independent of protected attributes conditional on risk score. Give risk scores $s(x)$
 $$Pr(Y = 1 | s(X), X_{p}) = Pr(Y =1 | s(X))$$
+
+## Stats Discussion Corbett-Davies & Goel
+
+
+## Tools
+MIT CS Ph.D. student Julius Adebayo https://github.com/adebayoj/fairml 
+
+
 
 ## Bibliography
 

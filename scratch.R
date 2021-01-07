@@ -78,18 +78,18 @@ for(i in g) {
 perfDf <- do.call(rbind,outPerf)
 
 # plot tpr and fpr comparing groups
-ggplot(data = perfDf, aes(x = as.factor(cutoff), y = tpr, fill = race)) + 
-  geom_bar(position = 'dodge', stat = 'identity')
+ggplot(data = perfDf, aes(x = as.factor(cutoff), y = tpr, group = race, color = race)) + 
+  geom_line(stat = 'identity')
 
-# plot tpr and fpr comparing groups
-ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fpr, fill = race)) + 
-  geom_bar(position = 'dodge', stat = 'identity')
+# plot fpr comparing groups
+ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fpr, group = race, color = race)) + 
+  geom_line(stat = 'identity')
 
 # plot fnr comparing groups
-ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, fill = race)) + 
-  geom_bar(position = 'dodge', stat = 'identity')
+ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, group = race, color = race)) + 
+   geom_line(stat = 'identity')
 
 # plot tnr comparing groups
-ggplot(data = perfDf, aes(x = as.factor(cutoff), y = tnr, fill = race)) + 
-  geom_bar(position = 'dodge', stat = 'identity')
+ggplot(data = perfDf, aes(x = as.factor(cutoff), y = tnr, group = race, color = race)) + 
+  geom_line(stat = 'identity')
 
