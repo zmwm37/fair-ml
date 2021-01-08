@@ -93,3 +93,15 @@ ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, group = race, color = 
 ggplot(data = perfDf, aes(x = as.factor(cutoff), y = tnr, group = race, color = race)) + 
   geom_line(stat = 'identity')
 
+
+
+# CALIBRATION -------------------------------------------------------------
+
+cal <- scoresWB %>%
+  group_by(decile_score, race) %>%
+  summarize(n = n(),
+         recid.count = sum(is_recid),
+         recid.rate = recid.count / n )
+
+ggplot(cal, aes(x = as.factor(decile_score), y = recid.rate, group = race, linetype = race)) +
+  geom_line(stat = 'identity')

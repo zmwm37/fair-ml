@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 ### What is Fair ML and why do we care?
-
+One loose definition is "developing the benefits of machine learning for everyone" [google ML Fairness Gym]
 
 ### Mitigating Bias vs. Quantifying Bias
 Prior talk focused on ethically mitigating bias in algorithms. This talk focuses on techniques and challenges to *quanitfy* bias. To recap from the excellent talk given by [INSERT NAME],.... Two types of bias that the talk covered include:
@@ -37,11 +37,16 @@ Like many things in math and computer science, what is "new" is often pretty old
 
 ## Quantifying fair in different algorithm types
 There are lots of classes of algorithms. The burgeoning field of fair ML is quickly demonstrating that different classes of algorithms require different quantitative frameworks for measuring fairness. Here are a few algorithm class examples and related fair ML research:  
-- Regression  (ranking)  
+- Regression  (ranking paper)  
+  
 - Classification (ProPublica, Buolamwini & Gebru)  
-- Recommendation Engines (Algorithms of Opression for non-technical dicussion of what's unfair)  
+  
+- Recommendation Engines (Algorithms of Opression for non-technical dicussion of what's unfair, Diaz et. al. for technical discussion)  
+  
 - Natural Language Processing/Generation (Yeo & Chen)    
-- Optimization 
+  
+- Optimization (Corbett-Davies 2017)  
+  
 - Reinforcement Learning  ([Google ML Fairness Gym](https://github.com/google/ml-fairness-gym))
 
 You could pick any combination of alogirthm classes above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sort of) and probably the most dicsussed in "ML pop culture." 
@@ -62,8 +67,9 @@ ADD SOME EXAMPLES HERE
 set of observable attributes for individual $i$: 
 $$x_{i} \in \mathbb{R}^{p}$$
 
-Two possible actions: $a_{0}$ and $a_{1}$
-> Example: a court may choose to grant or not grant pretrial release to a defendant
+Two possible actions: $a_{0}$ and $a_{1}$  
+
+> Example: a court may choose to grant or not grant pretrial release to a defendant  
 
 Decision algorithm is any function $d: R^{p} \rightarrow \{0,1\}$ where $d(x) = k$
 
@@ -172,6 +178,10 @@ ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, group = race, color = 
    geom_line(stat = 'identity')
 ```
 
+But there are other metrics to consider in a confusion matrix. In Northpointe's rebuttal to ProPublica, they note that COMPAS achieves predictive parity since they positive and negative predictive values are comparable.
+[insert chart from northpointe analysis?]
+
+
 ## Mathematical definitions: Classification Parity
 Classification parity: some given measure of classification error is equal across groups defined by protected attributes. There are lots of metrics from confusion matrix that could be used here (Berk et. al.), as well as the Area Under the Curve. Corbett-Davies highlight:
 - demographic parity: parity in proportion of positive decisions  
@@ -179,17 +189,53 @@ $$Pr(d(X) = 1 | X_{p}) = Pr(d(X) = 1)$$
 - parity of false positive rates  
 $$Pr(d(X)  = 1 | Y = 0, X_{p}) = Pr(d(X) = 1 | Y = 0)$$  
 
-For a simple demonstration of this principle, let's take the error curves from the prior example. If we shift the curves for African-Americans to the left by 2, they become very comparable at several risk scores to the curves for Caucasians. So by subtracting 2 from the risk scores for African-Americans, the model becomes "fairer" based on classification parity. However, this directly violates the anti-classification we just covered since it considers protected characteristics in determining scores.
+For a simple demonstration of this principle, let's take the error curves from the prior example. If we shift the curves for African-Americans to the left by 2, they become very comparable at several risk scores to the curves for Caucasians. So by subtracting 2 from the risk scores for African-Americans, the model becomes "fairer" based on false positive and false negative rates.  
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+perfDf <- perfDf %>%
+  mutate(cutoff2 = ifelse(race == 'African-American',cutoff-2, cutoff))
+
+# plot fpr comparing groups
+ggplot(data = perfDf, aes(x = as.factor(cutoff2), y = fpr, group = race, color = race)) + 
+  geom_line(stat = 'identity')
+
+# plot fnr comparing groups
+ggplot(data = perfDf, aes(x = as.factor(cutoff2), y = fnr, group = race, color = race)) + 
+   geom_line(stat = 'identity')
+
+```
+
+However, this directly violates the anti-classification we just covered since it considers protected characteristics in determining scores. Which might be acceptable (and legal), depending on the situation.
+
+## Limitations of Classification Parity
+Corbett-Davies et. al. point out that when base estimated risk rates differ across groups, error rates will also differ
+[Figure 4 from Corbett-Davies]
+Furthermore, it is critical to understand *how* these risk distributions 
+
+
 
 ## Mathematical definitions: Calibration
 Calibration: outcomes should be independent of protected attributes conditional on risk score. Give risk scores $s(x)$
 $$Pr(Y = 1 | s(X), X_{p}) = Pr(Y =1 | s(X))$$
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+cal <- scoresWB %>%
+  group_by(decile_score, race) %>%
+  summarize(n = n(),
+         recid.count = sum(is_recid),
+         recid.rate = recid.count / n )
+
+ggplot(cal, aes(x = as.factor(decile_score), y = recid.rate, group = race, linetype = race)) +
+  geom_line(stat = 'identity')
+```
 
 ## Stats Discussion Corbett-Davies & Goel
 
 
-## Tools
+## Avaialbe Tools
 MIT CS Ph.D. student Julius Adebayo https://github.com/adebayoj/fairml 
+
+Google ML Fairness Gym
+
 
 
 
