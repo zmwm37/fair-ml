@@ -1,49 +1,61 @@
 ---
-title: "fairML"
+title: "Quantifying Fairness in Machine Learning"
 author: "Zander Meitus"
-date: "1/15/2021"
+date: "1/21/2021"
 output:
-  slidy_presentation: default
-  powerpoint_presentation:
+  powerpoint_presentation: 
     reference_doc: deloitteTemplate.pptx
+  slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Framing the Problem
+## What is Fair ML and why do we care?
+One loose definition is "developing the benefits of machine learning for everyone." [google ML Fairness Gym] We care because the algorithms we develop for government clients affect U.S. citizens and the services their government provides them. 
+  
+Algorithms we develop are inherently at risk of becoming what mathematician Cathy O'Neil describes as "Weapons of Math Destruction," which consist of three components:
+  
+- Opacity  
+  
+- Scale  
+  
+- Damage  
+  
+We can increase transparency, at a minimum with our clients, and decrease risk of damage by thinking about how our algorithms may affect groups differently 
 
+## Mitigating Bias vs. Quantifying Bias
+A prior Analytics University talk from Faith Umoh & Daniel Beaulieu focused on ethically mitigating bias in algorithms. The talk covered two main types of bias (and techniques to avoid them):  
 
-### What is Fair ML and why do we care?
-One loose definition is "developing the benefits of machine learning for everyone" [google ML Fairness Gym]
+- Selection Bias: when the training sample contains a higher distribution of some sub-groups when compared to others, resulting in a misrepresentation of the population or situation that the model is seeking to understand    
 
-### Mitigating Bias vs. Quantifying Bias
-Prior talk focused on ethically mitigating bias in algorithms. This talk focuses on techniques and challenges to *quanitfy* bias. To recap from the excellent talk given by [INSERT NAME],.... Two types of bias that the talk covered include:
+- Unconcious Bias: the tendency to incorrectly design a model, collect input data, and interpret the results based on social stereotype about the groups associated with the problem  
+  
+This presentation will talk about mathematical approaches to *quantify* algorithmic fairness, and how messy it can get.
 
-- Selection Bias: [INSERT DEFINITION]  
-
-- Confirmation Bias: [INSERT DEFINITION]  
-
-### Defintions
-Ok great, let's quantify bias or fairness. What do we mean by "fairness" in Machine Learning?  
-- This presentation will talk about approaches and challenges to mathematically defining fairness  
-- Ultimately, fairness includes a philosohpical component as well that is very important. As data science practitioners working in quantitative methods, it's helpful to apply a mathematical framework too  
 
 ## History
-Like many things in math and computer science, what is "new" is often pretty old. Fair ML is a hot topic, but a very similar conversation was happening in the 1960's and 1970's. A couple reseraches at Google Brain* presented at a conference in 2018 prsented on this topic [50 years of (Un)Fair Paper]
-
-* Google Brain has done great work in this space, but it's important to note the [recent pushing out](https://www.technologyreview.com/2020/12/04/1013294/google-ai-ethics-research-paper-forced-out-timnit-gebru/) of one of their leading researchers, Timnit Gebru, over a forthcoming paper she had coauthored.
+Like many things in math and computer science, what is "new" is often pretty old. Fair ML is a hot topic, but a very similar conversation was happening in the 1960's and 1970's. 
+  
+Two researches from Google Brain, Ben Hutchinson and Margaret Mitchell, published an [article](http://www.m-mitchell.com/papers/History_of_Fairness-arxiv.pdf) on this very topic [50 years of (Un)Fair Paper]^[Google Brain has done great work in this space, but it's important to note the [recent pushing out](https://www.technologyreview.com/2020/12/04/1013294/google-ai-ethics-research-paper-forced-out-timnit-gebru/) of one of their leading researchers, Timnit Gebru, over a forthcoming paper she had coauthored]  
+  
+- After the Civil Rights Act of 1964, "assessment tests in the public and private industry immediately came under public scrutiny"  
+  
+- "This stimulated a wealth of research into how to matehmatically measure unfair bias and discrimination within the educational and employment testing communities, often with a focus on race"  
 
 ## Quantifying fair in different algorithm types
 There are lots of classes of algorithms. The burgeoning field of fair ML is quickly demonstrating that different classes of algorithms require different quantitative frameworks for measuring fairness. Here are a few algorithm class examples and related fair ML research:  
+
 - Regression  (ranking paper)  
   
-- Classification (ProPublica, Buolamwini & Gebru)  
+- Classification ([Angwin et. al.](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing), [Buolamwini et. al. 2018](http://proceedings.mlr.press/v81/buolamwini18a/buolamwini18a.pdf))  
   
-- Recommendation Engines (Algorithms of Opression for non-technical dicussion of what's unfair, Diaz et. al. for technical discussion)  
+- Search Engines ([Algorithms of Opression by Safiya Noble](https://nyupress.org/9781479837243/algorithms-of-oppression/))  
   
-- Natural Language Processing/Generation (Yeo & Chen)    
+- Recommendation Engines ([Diaz et. al. 2020](https://arxiv.org/pdf/2004.13157.pdf))  
+  
+- Natural Language Processing/Generation ([Sun et. al. 2019](https://www.aclweb.org/anthology/P19-1159.pdf),[Yeo & Chen 2020](https://arxiv.org/pdf/2008.01548.pdf))    
   
 - Optimization (Corbett-Davies 2017)  
   
@@ -51,19 +63,31 @@ There are lots of classes of algorithms. The burgeoning field of fair ML is quic
 
 You could pick any combination of alogirthm classes above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sort of) and probably the most dicsussed in "ML pop culture." 
 
+## Basic Overview of Classifation Models 
+Classification models are a type of alogorithm that try to predict an outcome label for a given observation.   
+  
+We will be focusing on binary classification problems where there are only two possible outcomes.  
+  
+As a basic example, think of a model where we are trying to predict whether a medical patient is sick or not, and the only data point we have is temperature. Our classification model could be as simple as picking a temperature and predicting everyone over that temperature is sick, everyone below is healthy.
+
+## Measures of Performance: Confusion Matrix  
+
+## Measures of Performance: Receiver-Operator Characterisitc (ROC) Curve  
+[Insert XKCD image]
+
 ## Corbett-Davies and Goel: The Measure & Mismeasure of Fairness
 In a 2018 paper, two researchers at Stanford University, Corbett-Davies and Goel, identified prevalent legal definitions of "fairness" in U.S. law and examined their statistical underpinnings and shortcomings. They identify the following three standards:  
 
 - Anti-Classification: protected attributes are not explicitly used to make decisions  
-
+  
 - Classification Parity: common measures of predictive performance are equal across groups of protected attributes  
-
+  
 - Calibration: conditional on risk attributes, outcomes are independent of protected attributes     
-
+  
 Legal Vignette: Corbett-Davies and Goel discuss how U.S. law generally prohibits use of protected classes, which is in line with anti-classification. However, it is permitted in some cases like affirmative action. 
 
 ## Formulas
-ADD SOME EXAMPLES HERE
+[ADD SOME EXAMPLES HERE]  
 set of observable attributes for individual $i$: 
 $$x_{i} \in \mathbb{R}^{p}$$
 
@@ -74,17 +98,17 @@ Two possible actions: $a_{0}$ and $a_{1}$
 Decision algorithm is any function $d: R^{p} \rightarrow \{0,1\}$ where $d(x) = k$
 
 ## Assumptions - corbett davies
-- x can be partitioned into protected and unprotected features
+x can be partitioned into protected and unprotected features
 $$x = (x_{p}, x_{u})$$
 
-- For each individual, there is a quantity that specifies target of prediction
+For each individual, there is a quantity that specifies target of prediction
 $$y \in \{0,1\}$$
-- Define random variables $X$ and $Y$ that take on values $X = x$ and $Y = y$ for an individual drawn randomly form population
+Define random variables $X$ and $Y$ that take on values $X = x$ and $Y = y$ for an individual drawn randomly form population
 
-- True risk function 
+True risk function 
 $$r(x) = Pr(Y = 1 | X = x)$$
 
-- Risk assessment algorithms produce a risk score $s(x)$ that may be viewed as an approximation of true risk $r(x)$ which often has a threshold to convert from risk scores to decisions, setting $d(x) = 1$ if and only if $s(x) \geq t$ for some fixed threshold $t \in \mathbb{R}$
+Risk assessment algorithms produce a risk score $s(x)$ that may be viewed as an approximation of true risk $r(x)$ which often has a threshold to convert from risk scores to decisions, setting $d(x) = 1$ if and only if $s(x) \geq t$ for some fixed threshold $t \in \mathbb{R}$
 
 ## COMPAS Data Overview
 In 2016, ProPublica analyzed a commercially availbe algorithm made by Northpointe, Inc. that estimated the likelihood of a criminal defendant from become a recidivist (i.e. re-offending). Here's a brief description of the data
@@ -93,14 +117,20 @@ In 2016, ProPublica analyzed a commercially availbe algorithm made by Northpoint
 
 We'll focus on the the "Risk of Recidivism" score to apply the ideas in Corbett-Davies and Goel's work. For a full description of the analysis, see [here](https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm)
 
-## Mathematical definitions: Anti-Classification (1 of ?)
-Anti-classification: decision do not consider protected attributes  
-$d(x) = d(x^{\prime})$ for all $x, x^{\prime}$ such that $x_{u} = x^{\prime}_{u}$
+## Anti-Classification Definition (1 of 3)
 
-The COMPAS algorithm doesn't use race as an input, so a basic application of the risk score is essentially applying the "Anti-Classification" principle. 
+:::::::::::::: {.columns}
+::: {.column}
+Anti-classification: decision does not consider protected attributes  
 
-There are several quantitative techniques that we could use to compare outcomes across groups.[source?] Let's start with ROC curves for white and Black defendants.
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+$$d(x) = d(x^{\prime}) \verb! for all ! x, x^{\prime} \verb! such that ! x_{u} = x^{\prime}_{u}$$
+
+COMPAS algorithm doesn't use race as an input, so a basic application of the risk score is essentially applying the "Anti-Classification" principle. 
+  
+There are several quantitative techniques that we could use to compare outcomes across groups [beck source].. Let's start with ROC curves for white and Black defendants.
+:::
+::: {.column}
+```{r echo = FALSE, message = FALSE, warning = FALSE, fig.height = 3, fig.width = 6}
 library(tidyverse)
 library(ROCR)
 
@@ -161,11 +191,19 @@ for(i in g) {
 } 
 
 ```
+:::
+::::::::::::::
 
-Ok, curves look pretty similar and the areas under the curve (AUCs) are comparable. But this is a first example of nuance for measuring fariness. If we look at errror rates (false positive rate and false negative rate) by race, we see some discrepancies. At any given cutoff Caucasians have a higher false negative rate and African-Americans have a higher false positive rate. If we think of the implications of these errors, it means that at any given model score cutoff:  
+
+## Anti-Classification Definition (2 of 3)
+:::::::::::::: {.columns}
+::: {.column}
+Ok, curves look pretty similar and the areas under the curve (AUCs) are comparable. If we look at errror rates (false positive rate and false negative rate) by race, we see some discrepancies. At any given cutoff Caucasians have a higher false negative rate and African-Americans have a higher false positive rate. If we think of the implications of these errors, it means that at any given model score cutoff:  
 - point 1  
 - point 2  
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+:::
+::: {.column}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height = 4, fig.width = 4}
 # bind group dataframes 
 perfDf <- do.call(rbind,outPerf)
 
@@ -174,22 +212,31 @@ ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fpr, group = race, color = 
   geom_line(stat = 'identity')
 
 # plot fnr comparing groups
-ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, group = race, color = race)) + 
-   geom_line(stat = 'identity')
+# ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, group = race, color = race)) + 
+   # geom_line(stat = 'identity')
 ```
+:::
+::::::::::::::
 
+## Anti-Classification Definition (3 of 3)
 But there are other metrics to consider in a confusion matrix. In Northpointe's rebuttal to ProPublica, they note that COMPAS achieves predictive parity since they positive and negative predictive values are comparable.
 [insert chart from northpointe analysis?]
 
 
 ## Mathematical definitions: Classification Parity
-Classification parity: some given measure of classification error is equal across groups defined by protected attributes. There are lots of metrics from confusion matrix that could be used here (Berk et. al.), as well as the Area Under the Curve. Corbett-Davies highlight:
+:::::::::::::: {.columns}
+::: {.column}
+Classification parity: some given measure of classification error is equal across groups defined by protected attributes. There are lots of metrics from confusion matrix that could be used here (Berk et. al.), as well as the Area Under the Curve. Corbett-Davies highlight:  
+  
 - demographic parity: parity in proportion of positive decisions  
 $$Pr(d(X) = 1 | X_{p}) = Pr(d(X) = 1)$$  
+  
 - parity of false positive rates  
 $$Pr(d(X)  = 1 | Y = 0, X_{p}) = Pr(d(X) = 1 | Y = 0)$$  
 
-For a simple demonstration of this principle, let's take the error curves from the prior example. If we shift the curves for African-Americans to the left by 2, they become very comparable at several risk scores to the curves for Caucasians. So by subtracting 2 from the risk scores for African-Americans, the model becomes "fairer" based on false positive and false negative rates.  
+For a simple demonstration of this principle, let's take the error curves from the prior example. If we shift the curves for African-Americans to the left by 2, they become very comparable at several risk scores to the curves for Caucasians. So by subtracting 2 from the risk scores for African-Americans, the model becomes "fairer" based on false positive and false negative rates.
+:::
+::: {.column}
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 
 perfDf <- perfDf %>%
@@ -204,13 +251,17 @@ ggplot(data = perfDf, aes(x = as.factor(cutoff2), y = fnr, group = race, color =
    geom_line(stat = 'identity')
 
 ```
+:::
+::::::::::::::
+  
+
 
 However, this directly violates the anti-classification we just covered since it considers protected characteristics in determining scores. Which might be acceptable (and legal), depending on the situation.
 
 ## Limitations of Classification Parity
 Corbett-Davies et. al. point out that when base estimated risk rates differ across groups, error rates will also differ
 [Figure 4 from Corbett-Davies]
-Furthermore, it is critical to understand *how* these risk distributions 
+Furthermore, it is critical to understand *how* these risk distributions came to be and how the algorithm may *shape* them in the future
 
 
 
@@ -231,7 +282,7 @@ ggplot(cal, aes(x = as.factor(decile_score), y = recid.rate, group = race, linet
 ## Stats Discussion Corbett-Davies & Goel
 
 
-## Avaialbe Tools
+## Available Tools
 MIT CS Ph.D. student Julius Adebayo https://github.com/adebayoj/fairml 
 
 Google ML Fairness Gym
@@ -240,5 +291,19 @@ Google ML Fairness Gym
 
 
 ## Bibliography
+Angwin, ProPublica
 
+Buolamwini, Joy and Timnit Gebru. "Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification"
+  
+Diaz, Fernando, Bhaskar Mitra, Michael D. Ekstrand, Asia J. Biega, Ben Carterette. Evaluating Stochastic Rankings with Expected Exposure. In *Proceedings of the 29th ACM International Conference on Information
+and Knowledge Management (CIKM ’20), October 19–23, 2020, Virtual Event, Ireland.* ACM, New York, NY, USA, 10 pages. https://doi.org/10.1145/3340531.3411962
+
+
+Hutchinson, Ben and Margaret Mitchell. "50 Years of Testing (Un)Fairness"
+
+O'Neil, Cathy. *Weapons of Math Destruction: How Big Data Increases Inequality and Threatens Democracy.* 2016.  
+
+Sun, Tony, Andrew Gaut, Shirlyn Tang, Yuxin Huang, Mai ElSherief, Jieyu Zhao, Diba Mirza, Elizabeth Belding, Kai-Wei chang, and William Yang Wang. "Mitigating Gender Bias in Natural Language Processing: Literature Review>"
+
+Yeo, Catherine and Alyssa Chen. "Defining and Evaluating Fair Natural Language Generation" 
 
