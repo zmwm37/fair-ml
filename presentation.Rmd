@@ -63,17 +63,40 @@ There are lots of classes of algorithms. The burgeoning field of fair ML is quic
 
 You could pick any combination of alogirthm classes above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sort of) and probably the most dicsussed in "ML pop culture." 
 
-## Basic Overview of Classifation Models 
-Classification models are a type of alogorithm that try to predict an outcome label for a given observation.   
+## Classifation Models 
+Classification models are a type of alogorithm that try to predict an outcome label for a given observation. We will be focusing on binary classification problems where there are only two possible outcomes.  
   
-We will be focusing on binary classification problems where there are only two possible outcomes.  
+As a basic example, think of a model where we are trying to predict whether a patient is sick or not based on their temperature. Let's pick a cutoff of 98.6 degrees Farenheit
+```{r, echo = FALSE, message = FALSE, warning=FALSE}
+library(knitr)
+library(dplyr)
+set.seed(303)
+
+df <- data.frame(patient.id = 1:7, temp = round(rnorm(n = 7, mean = 98.6, sd =5),1)) %>% 
+  mutate(pred.condition = ifelse(temp > 98.6, 'sick','healthy'),
+    true.condition = c('healthy','sick','healthy','healthy','healthy', 'sick','sick'))
+
+kable(df)
+```
+## Confusion Matrix  
+```{r, echo = FALSE, message = FALSE, warning=FALSE}
+table(df$pred.condition,df$true.condition, dnn = c('Predicted Value','True Value'))
+```
+
+## Receiver-Operator Characterisitc (ROC) Curve
+:::::::::::::: {.columns}
+::: {.column}
+True positive Rate = Number of true positives / Number of Condition Positive
+- I.e., of all sick people, what proportion did we correctly identify as sick?  
   
-As a basic example, think of a model where we are trying to predict whether a medical patient is sick or not, and the only data point we have is temperature. Our classification model could be as simple as picking a temperature and predicting everyone over that temperature is sick, everyone below is healthy.
+False posite rate = Number of false positives / Number of Condition Negative
+- I.e., of all healthy people, what proportion did we wrongly label as sick?  
 
-## Measures of Performance: Confusion Matrix  
-
-## Measures of Performance: Receiver-Operator Characterisitc (ROC) Curve  
-[Insert XKCD image]
+:::
+::: {.column}
+![roc curve example](./roc-xkcd.jpg)
+:::
+::::::::::::::
 
 ## Corbett-Davies and Goel: The Measure & Mismeasure of Fairness
 In a 2018 paper, two researchers at Stanford University, Corbett-Davies and Goel, identified prevalent legal definitions of "fairness" in U.S. law and examined their statistical underpinnings and shortcomings. They identify the following three standards:  
