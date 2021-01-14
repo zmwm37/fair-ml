@@ -79,6 +79,7 @@ df <- data.frame(patient.id = 1:7, temp = round(rnorm(n = 7, mean = 98.6, sd =5)
 kable(df)
 ```
 ## Confusion Matrix  
+A conufsion matrix is a cross-tabulation of a classifier's predictions and the true values. The cells of the matrix, going clockwise from top left, represent true positives, false negatives, true negatives, and false positives. There are many metrics you can calculate from a confusion matrix, some of which we'll cover today.
 ```{r, echo = FALSE, message = FALSE, warning=FALSE}
 table(df$pred.condition,df$true.condition, dnn = c('Predicted Value','True Value'))
 ```
@@ -98,7 +99,7 @@ False posite rate = Number of false positives / Number of Condition Negative
 :::
 ::::::::::::::
 
-## Corbett-Davies and Goel: The Measure & Mismeasure of Fairness
+## The Measure & Mismeasure of Fairness
 In a 2018 paper, two researchers at Stanford University, Corbett-Davies and Goel, identified prevalent legal definitions of "fairness" in U.S. law and examined their statistical underpinnings and shortcomings. They identify the following three standards:  
 
 - Anti-Classification: protected attributes are not explicitly used to make decisions  
@@ -120,8 +121,8 @@ Two possible actions: $a_{0}$ and $a_{1}$
 
 Decision algorithm is any function $d: R^{p} \rightarrow \{0,1\}$ where $d(x) = k$
 
-## Assumptions - corbett davies
-x can be partitioned into protected and unprotected features
+## Assumptions
+$x$ can be partitioned into protected and unprotected features
 $$x = (x_{p}, x_{u})$$
 
 For each individual, there is a quantity that specifies target of prediction
@@ -140,7 +141,7 @@ In 2016, ProPublica analyzed a commercially availbe algorithm made by Northpoint
 
 We'll focus on the the "Risk of Recidivism" score to apply the ideas in Corbett-Davies and Goel's work. For a full description of the analysis, see [here](https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm)
 
-## Anti-Classification Definition (1 of 3)
+## Anti-Classification (1 of 3)
 
 :::::::::::::: {.columns}
 ::: {.column}
@@ -218,7 +219,7 @@ for(i in g) {
 ::::::::::::::
 
 
-## Anti-Classification Definition (2 of 3)
+## Anti-Classification (2 of 3)
 :::::::::::::: {.columns}
 ::: {.column}
 Ok, curves look pretty similar and the areas under the curve (AUCs) are comparable. If we look at errror rates (false positive rate and false negative rate) by race, we see some discrepancies. At any given cutoff Caucasians have a higher false negative rate and African-Americans have a higher false positive rate. If we think of the implications of these errors, it means that at any given model score cutoff:  
@@ -226,29 +227,48 @@ Ok, curves look pretty similar and the areas under the curve (AUCs) are comparab
 - point 2  
 :::
 ::: {.column}
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height = 4, fig.width = 4}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height = 4, fig.width = 8}
+library(gridExtra)
 # bind group dataframes 
 perfDf <- do.call(rbind,outPerf)
 
 # plot fpr comparing groups
-ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fpr, group = race, color = race)) + 
-  geom_line(stat = 'identity')
+p1 <- ggplot(data = perfDf, aes(x = as.factor(cutoff),
+                                y = fpr, 
+                                group = race,
+                                linetype = race, 
+                                color = race)) + 
+  geom_line(stat = 'identity') +
+  geom_point()+
+  theme(legend.position = 'none') +  
+  ylab('False Positive Rate')+
+  xlab('Model Cutoff')+
+  ggtitle('False Positive Rate by Cutoff')
 
 # plot fnr comparing groups
-# ggplot(data = perfDf, aes(x = as.factor(cutoff), y = fnr, group = race, color = race)) + 
-   # geom_line(stat = 'identity')
+p2 <- ggplot(data = perfDf, aes(x = as.factor(cutoff),
+                                y = fnr, 
+                                group = race,
+                                linetype = race,
+                                color = race)) +
+  geom_line(stat = 'identity') +
+  geom_point()+
+  theme(legend.position = c(.75,.15))+
+  ylab('False Negative Rate')+
+  xlab('Model Cutoff')+
+  ggtitle('False Negative Rate by Cutoff')
+
+grid.arrange(p1,p2, ncol = 2)
 ```
 :::
 ::::::::::::::
 
-## Anti-Classification Definition (3 of 3)
+## Anti-Classification (3 of 3)
 But there are other metrics to consider in a confusion matrix. In Northpointe's rebuttal to ProPublica, they note that COMPAS achieves predictive parity since they positive and negative predictive values are comparable.
 [insert chart from northpointe analysis?]
 
 
-## Mathematical definitions: Classification Parity
-:::::::::::::: {.columns}
-::: {.column}
+## Classification Parity
 Classification parity: some given measure of classification error is equal across groups defined by protected attributes. There are lots of metrics from confusion matrix that could be used here (Berk et. al.), as well as the Area Under the Curve. Corbett-Davies highlight:  
   
 - demographic parity: parity in proportion of positive decisions  
@@ -257,21 +277,26 @@ $$Pr(d(X) = 1 | X_{p}) = Pr(d(X) = 1)$$
 - parity of false positive rates  
 $$Pr(d(X)  = 1 | Y = 0, X_{p}) = Pr(d(X) = 1 | Y = 0)$$  
 
+## Classification Parity
+:::::::::::::: {.columns}
+::: {.column}
 For a simple demonstration of this principle, let's take the error curves from the prior example. If we shift the curves for African-Americans to the left by 2, they become very comparable at several risk scores to the curves for Caucasians. So by subtracting 2 from the risk scores for African-Americans, the model becomes "fairer" based on false positive and false negative rates.
 :::
 ::: {.column}
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height = 4, fig.width = 8}
 
 perfDf <- perfDf %>%
   mutate(cutoff2 = ifelse(race == 'African-American',cutoff-2, cutoff))
 
 # plot fpr comparing groups
-ggplot(data = perfDf, aes(x = as.factor(cutoff2), y = fpr, group = race, color = race)) + 
-  geom_line(stat = 'identity')
+p3 <- ggplot(data = perfDf, aes(x = as.factor(cutoff2), y = fpr, group = race, color = race)) + 
+  geom_line(stat = 'identity') +
+  theme(legend.title = element_blank())
 
 # plot fnr comparing groups
-ggplot(data = perfDf, aes(x = as.factor(cutoff2), y = fnr, group = race, color = race)) + 
-   geom_line(stat = 'identity')
+p4<- ggplot(data = perfDf, aes(x = as.factor(cutoff2), y = fnr, group = race, color = race)) + 
+   geom_line(stat = 'identity') +
+  theme(legend.position = 'bottomright')
 
 ```
 :::
@@ -304,6 +329,10 @@ ggplot(cal, aes(x = as.factor(decile_score), y = recid.rate, group = race, linet
 
 ## Stats Discussion Corbett-Davies & Goel
 
+## Double Edge Data Sword
+In order to evaluate models for their impact on certain sub-groups, your data needs to contain observations of whatever variable defines these sub-groups. 
+
+These data can be powerful and helpful when applied to making algorithms fairer, but they can also be used for nefarious discriminatory purposes. Always think carefully about what data is actually necessary, how the data is collected, who can access the data, and how the data could be misused.  
 
 ## Available Tools
 MIT CS Ph.D. student Julius Adebayo https://github.com/adebayoj/fairml 
