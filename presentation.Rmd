@@ -197,19 +197,26 @@ for(i in g) {
   } else {
     FALSE
   }
+  l <- if(z > 1){
+    2
+  } else {
+    1
+  }
   
   # plot
-  plot(rocPerf, add = b, col = lineColors[z])
+  plot(rocPerf, add = b, lwd = 3, lty = l, col = lineColors[z])
+  text(x = 0.6, y = 0.5-(z*.05), labels = paste(g[z],' AUC: ', round(performance(pred, 'auc')@y.values[[1]],3)))
   
   if (z == 1) {
     legend('bottomright',
            legend = g,
            col = lineColors,
-           lty =1)
+           lty = c(1,2))
   }
   
   z <- z + 1
 } 
+test <- performance(pred,'auc')
 
 ```
 :::
@@ -469,19 +476,21 @@ Google ML Fairness Gym
 
 
 ## Bibliography
-Angwin, ProPublica
-
-Buolamwini, Joy and Timnit Gebru. "Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification"
+Angwin, Julia, Jeff Larson, Surya Mattu and Lauren Kirchner. "Machine Bias." *ProPublica* May 23, 2016. https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing (Accessed January 17, 2021)  
   
-Diaz, Fernando, Bhaskar Mitra, Michael D. Ekstrand, Asia J. Biega, Ben Carterette. Evaluating Stochastic Rankings with Expected Exposure. In *Proceedings of the 29th ACM International Conference on Information
-and Knowledge Management (CIKM ’20), October 19–23, 2020, Virtual Event, Ireland.* ACM, New York, NY, USA, 10 pages. https://doi.org/10.1145/3340531.3411962
+Bolukbasi, Tolga, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai. "Man is to Computer Programmer as Woman is to Homemaker?: Debiased Word Embeddings." *NIPS '16: Proceedings of the 30th International Conference on Neural Information Processing Systems* (December 2016): 4356-4364. https://dl.acm.org/doi/10.5555/3157382.3157584 (Accessed January 17, 2021).
 
+Buolamwini, Joy and Timnit Gebru. "Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification." *Proceedings of Machine Learning Research* 81 (2018): 77-91. http://proceedings.mlr.press/v81/buolamwini18a/buolamwini18a.pdf (Accessed January 17, 2021).   
 
-Hutchinson, Ben and Margaret Mitchell. "50 Years of Testing (Un)Fairness"
+Corbett-Davies, Sam and Sharad Goel. "The Measure and Mismeasure of Fairness: A Critical Review of Fair Machine Learning." (August 2018). https://arxiv.org/pdf/1808.00023.pdf (Accessed January 17, 2021).
+  
+Diaz, Fernando, Bhaskar Mitra, Michael D. Ekstrand, Asia J. Biega, and Ben Carterette. "Evaluating Stochastic Rankings with Expected Exposure." *Proceedings of the 29th ACM International Conference on Information and Knowledge Management (CIKM ’20)* (October 2020). https://doi.org/10.1145/3340531.3411962 (Accessed January 17, 2021).    
+    
+Hutchinson, Ben and Margaret Mitchell. "50 Years of Testing (Un)Fairness: Lessons for Machine Learning." *FAT '19: Proceedings of the Conference on Fairness, Accountability, and Transparency* (January 2019): 49-58.https://arxiv.org/pdf/1811.10104.pdf (Accessed January 17, 2021).   
+   
+O'Neil, Cathy. *Weapons of Math Destruction: How Big Data Increases Inequality and Threatens Democracy.* New York: Crown Publishing Group, 2016.  
+  
+Sun, Tony, Andrew Gaut, Shirlyn Tang, Yuxin Huang, Mai ElSherief, Jieyu Zhao, Diba Mirza, Elizabeth Belding, Kai-Wei chang, and William Yang Wang. "Mitigating Gender Bias in Natural Language Processing: Literature Review." *Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics* (2019): 1630-1640. https://www.aclweb.org/anthology/P19-1159.pdf (Accessed January 17, 2021).    
 
-O'Neil, Cathy. *Weapons of Math Destruction: How Big Data Increases Inequality and Threatens Democracy.* 2016.  
-
-Sun, Tony, Andrew Gaut, Shirlyn Tang, Yuxin Huang, Mai ElSherief, Jieyu Zhao, Diba Mirza, Elizabeth Belding, Kai-Wei chang, and William Yang Wang. "Mitigating Gender Bias in Natural Language Processing: Literature Review>"
-
-Yeo, Catherine and Alyssa Chen. "Defining and Evaluating Fair Natural Language Generation" 
+Yeo, Catherine and Alyssa Chen. "Defining and Evaluating Fair Natural Language Generation." *Proceedings of the Fourth Widening Natural Language Processing Workshop* (July 2020). https://www.aclweb.org/anthology/2020.winlp-1.27/ (Accessed January 17, 2021).  
 
