@@ -51,17 +51,19 @@ There are lots of classes of algorithms. The burgeoning field of fair ML is quic
   
 - Classification ([Angwin et. al.](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing), [Buolamwini et. al. 2018](http://proceedings.mlr.press/v81/buolamwini18a/buolamwini18a.pdf))  
   
-- Search Engines ([Algorithms of Opression by Safiya Noble](https://nyupress.org/9781479837243/algorithms-of-oppression/))  
-  
-- Recommendation Engines ([Diaz et. al. 2020](https://arxiv.org/pdf/2004.13157.pdf))  
+- Search Engines & Recommendation Engines ([Algorithms of Opression by Safiya Noble](https://nyupress.org/9781479837243/algorithms-of-oppression/), [Diaz et. al. 2020](https://arxiv.org/pdf/2004.13157.pdf))    
   
 - Natural Language Processing/Generation ([Sun et. al. 2019](https://www.aclweb.org/anthology/P19-1159.pdf),[Yeo & Chen 2020](https://arxiv.org/pdf/2008.01548.pdf))    
   
-- Optimization (Corbett-Davies 2017)  
+- Optimization (Corbett-Davies et. al. 2017)  
   
-- Reinforcement Learning  ([Google ML Fairness Gym](https://github.com/google/ml-fairness-gym))
+- Graph & Network Analysis ([Atwood et. al. 2019](https://arxiv.org/abs/1911.05489))
+  
+- Reinforcement Learning  ([D'Amour et. al. 2020](https://dl.acm.org/doi/abs/10.1145/3351095.3372878))
 
 You could pick any combination of alogirthm classes above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sort of) and probably the most dicsussed in "ML pop culture." 
+
+Discussion: 
 
 ## Classifation Models 
 Classification models are a type of alogorithm that try to predict an outcome label for a given observation. We will be focusing on binary classification problems where there are only two possible outcomes.  
@@ -465,24 +467,35 @@ grid.arrange(g1,g2,g3, ncol = 3)
 ## Double Edge Data Sword
 In order to evaluate models for their impact on certain sub-groups, your data needs to contain observations of whatever variable defines these sub-groups. 
 
-These data can be powerful and helpful when applied to making algorithms fairer, but they can also be used for nefarious discriminatory purposes. Always think carefully about what data is actually necessary, how the data is collected, who can access the data, and how the data could be misused.  
+These data can be powerful and helpful when applied to making algorithms fairer, but they can also be used for nefarious discriminatory purposes. Always think carefully about:   - What data is actually necessary  
+  
+- How the data is collected  
+  
+- Who can access the data  
+  
+- How the data could be misused
 
-## Available Tools
-MIT CS Ph.D. student Julius Adebayo https://github.com/adebayoj/fairml 
-
-Google ML Fairness Gym
-
-
+## Summary and Future Thoughts
+One takeaway ftom this discussion is that quantifying fairness in machine learning is...complicated. But there are some other key points too:
+- Anytime you are working on a model, reflect and hypothesize with your team and clients on how it will impact people, and if it will impact different groups of people in different ways.  
+  
+- Test your hypotheses with existing quantitative tools, some of which we discussed today, and think about how you might invent your own. This is a new field with lots of room for improvement!  
+  
+- Think critically about the implications and limitations of these tests, discuss with your team and clients for richer dialogue and increased transparency.   
 
 
 ## Bibliography
 Angwin, Julia, Jeff Larson, Surya Mattu and Lauren Kirchner. "Machine Bias." *ProPublica* May 23, 2016. https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing (Accessed January 17, 2021)  
+  
+Atwood, James, Hansa Srinivasan, Yoni Halpern, D. Sculley. "Fair treatment allocations in social networks." *Fair ML for Health 2019*. https://arxiv.org/abs/1911.05489 (Accessed January 22, 2021)
   
 Bolukbasi, Tolga, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai. "Man is to Computer Programmer as Woman is to Homemaker?: Debiased Word Embeddings." *NIPS '16: Proceedings of the 30th International Conference on Neural Information Processing Systems* (December 2016): 4356-4364. https://dl.acm.org/doi/10.5555/3157382.3157584 (Accessed January 17, 2021).
 
 Buolamwini, Joy and Timnit Gebru. "Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification." *Proceedings of Machine Learning Research* 81 (2018): 77-91. http://proceedings.mlr.press/v81/buolamwini18a/buolamwini18a.pdf (Accessed January 17, 2021).   
 
 Corbett-Davies, Sam and Sharad Goel. "The Measure and Mismeasure of Fairness: A Critical Review of Fair Machine Learning." (August 2018). https://arxiv.org/pdf/1808.00023.pdf (Accessed January 17, 2021).
+  
+D'Amour, Alexnader, Hansa Srinivasan, James Atwood, Pallavi Baljekar, D. Sculley, and Yoni Halpern. "Fairness Is No Static: Deeper Understanding of Long Term Fainress via Simulation Studies." *FAT '20: Proceedings of the 2020 Conference on Fairness, Accountability, and Transparency* (January 2020):525-534. https://dl.acm.org/doi/abs/10.1145/3351095.3372878 (Accessed January 22, 2021).  
   
 Diaz, Fernando, Bhaskar Mitra, Michael D. Ekstrand, Asia J. Biega, and Ben Carterette. "Evaluating Stochastic Rankings with Expected Exposure." *Proceedings of the 29th ACM International Conference on Information and Knowledge Management (CIKM ’20)* (October 2020). https://doi.org/10.1145/3340531.3411962 (Accessed January 17, 2021).    
     
