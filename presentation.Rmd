@@ -59,7 +59,7 @@ There are lots of classes of algorithms. The burgeoning field of fair ML is quic
 
 You could pick any combination of alogirthm classes above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sort of) and probably the most dicsussed in "ML pop culture." 
 
-## Classifation Models 
+## Classification Models 
 :::::::::::::: {.columns}
 ::: {.column}
 Classification models are a type of alogorithm that try to predict an outcome label for a given observation. We will be focusing on binary classification problems where there are only two possible outcomes. As a basic example, think of a model where we are trying to predict whether a patient is sick or not based on their temperature. Let's pick a cutoff of 98.6 degrees Farenheit
@@ -92,10 +92,10 @@ A confusion matrix is a cross-tabulation of a classifier's predictions and the t
 ## Receiver-Operator Characterisitc (ROC) Curve
 :::::::::::::: {.columns}
 ::: {.column}
-True positive Rate = Number of True Positives / Number of Condition Positive
+True Positive Rate = Number of True Positives / Number of Condition Positive
 - I.e., of all sick people, what proportion did we correctly identify as sick?  
   
-False posite rate = Number of False Positives / Number of Condition Negative
+False Positive Rate = Number of False Positives / Number of Condition Negative
 - I.e., of all healthy people, what proportion did we wrongly label as sick?  
 
 :::
