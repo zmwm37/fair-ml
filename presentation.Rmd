@@ -57,12 +57,12 @@ There are lots of classes of algorithms. The burgeoning field of fair ML is quic
   
 - **Reinforcement Learning**  ([D'Amour et. al. 2020](https://dl.acm.org/doi/abs/10.1145/3351095.3372878))
 
-You could pick any combination of alogirthm classes above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sort of) and probably the most dicsussed in "ML pop culture." 
+You could pick any combination of algorithm classes above and they probably intersect or overlap. For today, we'll focus on classification. It's simpler (sort of) and probably the most dicsussed in "ML pop culture." 
 
 ## Classification Models 
 :::::::::::::: {.columns}
 ::: {.column}
-Classification models are a type of alogorithm that try to predict an outcome label for a given observation. We will be focusing on binary classification problems where there are only two possible outcomes. As a basic example, think of a model where we are trying to predict whether a patient is sick or not based on their temperature. Let's pick a cutoff of 98.6 degrees Farenheit.
+Classification models are a type of algorithm that try to predict an outcome label for a given observation. We will be focusing on binary classification problems where there are only two possible outcomes. As a basic example, think of a model where we are trying to predict whether a patient is sick or not based on their temperature. Let's pick a cutoff of 98.6 degrees Fahrenheit.
 :::
 ::: {.column}
 ```{r, echo = FALSE, message = FALSE, warning=FALSE}
@@ -112,7 +112,7 @@ In a 2018 paper, two researchers at Stanford University, Sam Corbett-Davies and 
   
 - **Calibration:** conditional on risk attributes, outcomes are independent of protected attributes     
   
-Legal Vignette: Corbett-Davies and Goel discuss how U.S. law generally prohibits use of protected classes, which is in line with anti-classification. However, it is permitted in some cases like affirmative action. 
+Legal Vignette: Corbett-Davies and Goel discuss how U.S. law often prohibits use of protected classes in many types of decisions, which is in line with anti-classification. However, it is permitted in some cases like affirmative action. 
 
 ## Assumptions
 Set of observable attributes for individual $i$: 
@@ -151,7 +151,7 @@ Anti-classification: a decision does not consider protected attributes
 
 $d(x) = d(x^{\prime})$ for all $x, x^{\prime}$ such that $x_{u} = x^{\prime}_{u}$
 
-The COMPAS algorithm doesn't use race as an input, so a basic application of the risk score is essentially applying the "Anti-Classification" principle. Let's start with ROC curves for white and Black defendants.
+The COMPAS algorithm doesn't use race as an input, so a basic application of the risk score is essentially applying the "Anti-Classification" principle. Let's start with ROC curves for predicting recidivism for white and Black defendants.
 :::
 ::: {.column}
 ```{r echo = FALSE, message = FALSE, warning = FALSE,  fig.width = 10}
@@ -319,7 +319,7 @@ grid.arrange(p3,p4, ncol = 2)
 :::
 ::::::::::::::
 ## Classification Parity
-Classification parity: some given measure of classification error is equal across groups defined by protected attributes. There are lots of metrics from confusion matrix that could be used here (Berk et. al.), as well as the Area Under the Curve. Corbett-Davies highlight:  
+Classification parity: some given measure of classification error is equal across groups defined by protected attributes. There are lots of metrics from confusion matrix that could be used [here](https://journals.sagepub.com/doi/full/10.1177/0049124118782533), as well as the Area Under the Curve. Corbett-Davies et. al. highlight:  
   
 Demographic parity: parity in proportion of positive decisions  
 $$Pr(d(X) = 1 | X_{p}) = Pr(d(X) = 1)$$
